@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <meta name="theme-color" content="#101617">
+  <meta name="description" content="Eray Gulerler's engineering portfolio. Network validation at Nokia, a C++ market-data replay engine, and public experiments in authorization and reliability.">
+  <meta property="og:title" content="Eray Gulerler | Networks &amp; systems">
+  <meta property="og:description" content="Network engineering in Warsaw. Explore selected projects and step through an order-book replay.">
+  <meta property="og:type" content="website">
+  <meta property="og:image" content="https://eraygulerler.github.io/topology.png">
+  <link rel="canonical" href="https://eraygulerler.github.io/">
+  <link rel="stylesheet" href="styles.css">
+  <title>Eray Gulerler | Networks &amp; systems</title>
+  <script src="replay.js" defer></script>
+</head>
+<body id="top">
+  <a class="skip" href="#main">Skip to content</a>
+  <header class="top wrap">
+    <a class="brand" href="#top" aria-label="Eray Gulerler, home"><span class="monogram">eg</span> Eray Gulerler</a>
+    <nav aria-label="Main"><a href="#work">Work</a><a href="#about">About</a><a href="#contact">Contact</a></nav>
+  </header>
+  <main id="main">
+    <section class="hero wrap" aria-labelledby="name">
+      <div class="intro">
+        <p class="eyebrow"><i></i> Networks &amp; systems</p>
+        <h1 id="name">Eray<br><em>Gulerler</em></h1>
+        <p class="lead">I test how networks behave at Nokia and build software in Warsaw. My projects explore what happens when a packet goes missing, a price changes, or a permission check fails.</p>
+        <div class="actions"><a class="primary" href="#work">Explore my work <span aria-hidden="true">↓</span></a><a class="quiet" href="https://github.com/ErayGulerler">GitHub <span aria-hidden="true">↗</span></a></div>
+      </div>
+      <figure class="plate">
+        <div class="platehead"><span>NETWORK TOPOLOGY</span><span>ISOMETRIC VIEW</span></div>
+        <img src="topology.png" width="1240" height="620" alt="Isometric diagram of four edge routers connected to a central node by parallel paths." fetchpriority="high">
+        <figcaption><span><b></b> Core to edge</span><span>Illustrative lab topology</span></figcaption>
+      </figure>
+    </section>
+    <section class="work section wrap" id="work" aria-labelledby="work-title">
+      <div class="sectionhead"><h2 id="work-title">Selected work</h2><a class="quiet" href="https://github.com/ErayGulerler?tab=repositories">All repositories <span aria-hidden="true">↗</span></a></div>
+      <article class="featured">
+        <div class="featurecopy">
+          <p class="eyebrow">Market data <span>/</span> C++20</p>
+          <h3>TickLadder</h3>
+          <p>When the best bid vanishes, which price comes next? This single-instrument replay engine uses a two-level bitmap to find the next occupied tick. A sequence gap stops publication at the last trustworthy quote.</p>
+          <p class="secondary">The tests cross-check both sides of the book against an ordered map across 300,000 random updates.</p>
+          <a class="textlink" href="https://github.com/ErayGulerler/TickLadder">Source &amp; design notes <span aria-hidden="true">↗</span></a>
+        </div>
+        <div class="replay" aria-labelledby="replay-title">
+          <div class="rephead"><h4 id="replay-title">Order book replay</h4><a href="https://github.com/ErayGulerler/TickLadder/blob/main/examples/session.csv">session.csv ↗</a></div>
+          <table><caption class="sr">Resting quantity by price for the selected sample update</caption><thead><tr><th>Tick</th><th>Side</th><th>Size (lots)</th></tr></thead>
+            <tbody>
+              <tr data-tick="12004"><th scope="row">12004</th><td>Ask</td><td><span class="bar" style="--w:53.33%"></span><output>40</output></td></tr>
+              <tr data-tick="12002"><th scope="row">12002</th><td>Ask</td><td><span class="bar" style="--w:40%"></span><output>30</output></td></tr>
+              <tr data-tick="12000" class="bid"><th scope="row">12000</th><td>Bid</td><td><span class="bar" style="--w:33.33%"></span><output>25</output></td></tr>
+              <tr data-tick="11998" class="bid"><th scope="row">11998</th><td>Bid</td><td><span class="bar" style="--w:80%"></span><output>60</output></td></tr>
+            </tbody>
+          </table>
+          <div class="replayfoot"><span id="step">Update 5 of 8</span><div id="buttons" hidden><button id="prev" aria-label="Previous update">←</button><button id="next" aria-label="Next update">→</button></div></div>
+          <p id="event" role="status">A new ask at 12002 narrows the spread to two ticks.</p>
+        </div>
+      </article>
+      <div class="projects">
+        <article><p class="eyebrow">Security <span>/</span> Python</p><h3><a href="https://github.com/ErayGulerler/ClaimFence">ClaimFence <span>↗</span></a></h3><p>Can an employee approve their own expense, or read a claim from another tenant? A 55-case HTTP suite checks the authorization boundary and tests four deliberately introduced regressions.</p></article>
+        <article><p class="eyebrow">Reliability <span>/</span> C++20</p><h3><a href="https://github.com/ErayGulerler/CanaryLedger">CanaryLedger <span>↗</span></a></h3><p>A release gate for a checkout service. It evaluates error and latency budgets on a canary before deciding whether the rollout can proceed. The repository includes CMake, Bazel and Jenkins configurations.</p></article>
+        <article><p class="eyebrow">Execution research <span>/</span> C++17</p><h3><a href="https://github.com/ErayGulerler/BTC-Execution-Lab">BTC Execution Lab <span>↗</span></a></h3><p>A simulator for comparing two ways to split an order over time. Python and SQL analysis compares an evenly timed schedule with one weighted by historical volume on BTC spot data.</p></article>
+        <article><p class="eyebrow">Data engineering <span>/</span> PySpark</p><h3><a href="https://github.com/ErayGulerler/parcel-invoice-audit">Parcel invoice audit <span>↗</span></a></h3><p>Reconciles revised parcel invoices against carrier tariffs. PySpark and Snowpark pipelines resolve billing revisions and rank potential overcharges for a reviewer.</p></article>
+      </div>
+    </section>
+    <section class="section wrap background" id="about" aria-labelledby="about-title">
+      <div><p class="eyebrow">About</p><h2 id="about-title">Experience &amp;<br><em>education</em></h2></div>
+      <div class="history">
+        <article><p class="eyebrow">July 2026 to present</p><h3>Nokia</h3><p class="role">Customer Delivery Engineering · Warsaw</p><p>I joined as a summer trainee and continued as a working student in October. I deploy SR Linux topologies with Containerlab and Docker, validate SDN/MPLS configurations in Nokia NSP, and inspect forwarding state and logs to reproduce faults.</p></article>
+        <article><p class="eyebrow">October 2024 to February 2028, expected</p><h3>Warsaw University of Technology</h3><p class="role">BSc programme · Computer Science and Information Systems</p><p>Faculty of Mathematics and Information Science. Alongside my coursework, I build small systems whose behaviour I can reproduce, measure and test.</p></article>
+      </div>
+    </section>
+    <section class="contact wrap" id="contact" aria-labelledby="contact-title">
+      <div><p class="eyebrow">Contact</p><h2 id="contact-title">Get in touch.</h2></div>
+      <div class="actions"><a class="primary" href="https://www.linkedin.com/in/eray-gulerler/">Message on LinkedIn <span aria-hidden="true">↗</span></a><a class="quiet" href="https://github.com/ErayGulerler">GitHub ↗</a></div>
+    </section>
+  </main>
+  <footer class="wrap"><span>Eray Gulerler · Warsaw, Poland</span><a href="#top">Back to top ↑</a></footer>
+</body>
+</html>
