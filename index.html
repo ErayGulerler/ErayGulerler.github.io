@@ -3,96 +3,65 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="color-scheme" content="light">
-  <meta name="theme-color" content="#f5e9c9">
-  <meta name="description" content="Eray Gulerler's engineering portfolio. Research on fraud-alert thresholds, network validation at Nokia, and reproducible systems software.">
-  <meta property="og:title" content="Eray Gulerler | Machine learning &amp; systems">
-  <meta property="og:description" content="Explore a fraud-detection experiment, step through a C++ order-book replay and read about network engineering at Nokia.">
-  <meta property="og:type" content="website">
-  <meta property="og:image" content="https://eraygulerler.github.io/tape-5.webp">
+  <meta name="description" content="Eray Gulerler’s personal homepage. Network engineering at Nokia, computer science in Warsaw, and a few programs and experiments.">
+  <meta property="og:title" content="Eray Gulerler">
+  <meta property="og:image" content="https://eraygulerler.github.io/ray-render.png">
   <link rel="canonical" href="https://eraygulerler.github.io/">
-  <link rel="stylesheet" href="styles.css?v=3">
-  <title>Eray Gulerler | Machine learning &amp; systems</title>
-  <script src="replay.js?v=3" defer></script>
+  <link rel="stylesheet" href="personal.css">
+  <title>Eray Gulerler</title>
+
+  <script src="trace.js" defer></script>
 </head>
-<body id="top">
-  <a class="skip" href="#main">Skip to content</a>
-  <header class="mast">
-    <div class="width mast-inner">
-      <div><h1>Eray Gulerler</h1><p>I study computer science in Warsaw and test networks at Nokia.</p></div>
-      <nav aria-label="Site navigation"><a href="#research">Research</a><a href="#projects">Projects</a><a href="#about">About</a><a href="https://github.com/ErayGulerler">GitHub ↗</a></nav>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<main id="main" class="home">
+  <header class="intro" id="about">
+    <img class="portrait" src="eray.jpg" alt="Eray Gulerler outdoors" width="800" height="800" fetchpriority="high">
+    <div>
+      <h1>Eray Gulerler</h1>
+      <p>I study computer science at Warsaw University of Technology and work on networks at Nokia. I joined as a summer trainee in July and stayed on as a working student in October 2026.</p>
+      <p>At work I set up virtual routers, change a configuration, and check where the packets go. Outside work I’ve been writing a C++ order book and testing fraud alerts on synthetic card transactions.</p>
+      <p id="contact" class="contact"><a href="https://github.com/ErayGulerler">GitHub</a> · <a href="https://www.linkedin.com/in/eray-gulerler/">LinkedIn</a></p>
     </div>
   </header>
-  <main id="main">
-    <section id="work" class="cover" aria-labelledby="cover-title">
-      <div class="width spread">
-        <div class="opening">
-          <a class="byline" href="https://github.com/ErayGulerler/TickLadder">TickLadder / C++20</a>
-          <h2 id="cover-title">Where did the <em>best bid</em> go?</h2>
-          <p>In my C++ order book, someone is bidding for 25 lots at 12000. The next update takes all 25 off the book. Which price moves to the front?</p>
-          <p>Step through the <a href="https://github.com/ErayGulerler/TickLadder/blob/main/examples/session.csv">sample tape</a>, then <a href="https://github.com/ErayGulerler/TickLadder/blob/main/include/tickladder/book.hpp">look inside the bitmap</a> that finds the price.</p>
-        </div>
-        <figure class="book" aria-labelledby="book-caption">
-          <figcaption id="book-caption">One slip = five lots <span>Price in ticks</span></figcaption>
-          <picture><source id="handheld" media="(max-width: 500px)" srcset="handheld-5.webp"><img id="drawing" src="tape-5.webp" width="1230" height="503" fetchpriority="high" alt="Update 5. Bids: 60 lots at 11998 and 25 at 12000. Asks: 30 at 12002 and 40 at 12004."></picture>
-          <div class="playline"><span id="step">Update 5 of 8</span><div id="buttons" hidden><button id="prev" aria-label="Previous update">←</button><button id="next">Remove the bid →</button></div></div>
-          <p id="event" role="status">The highest bid is 12000. The lowest ask is 12002.</p>
-          <noscript><a href="https://github.com/ErayGulerler/TickLadder/blob/main/examples/quotes.csv">Read all eight quotes ↗</a></noscript>
-        </figure>
-      </div>
-    </section>
-    <div class="width notebook">
-      <section id="research" class="research" aria-labelledby="threshold-title">
-        <div class="research-copy">
-          <p class="byline">Fraud detection / Python</p>
-          <h2 id="threshold-title">The catch was the review queue.</h2>
-          <p>I tested whether updating a fraud threshold every month would catch more fraud than keeping it fixed. Across six simulated months the monthly policy caught 28 more cases.</p>
-          <p>It also sent 31 more transactions for review. Give both policies the same number of reviews and the difference disappears.</p>
-          <div class="links"><a href="https://github.com/ErayGulerler/fraud-detection-api/blob/research/monthly-thresholds/research/monthly_thresholds/technical-report.pdf">Technical report ↗</a><a href="https://github.com/ErayGulerler/fraud-detection-api/tree/research/monthly-thresholds/research/monthly_thresholds">Experiment code ↗</a></div>
-          <p class="earlier"><a href="https://github.com/ErayGulerler/fraud-detection-api/blob/research/rare-event-distribution-shift/research/REPORT.md">Earlier study on rare-event classifiers ↗</a></p>
-        </div>
-                  <figure class="comparison">
-            <figcaption>Fraud caught by threshold policy</figcaption>
-            <fieldset><legend class="sr">Compare review volumes</legend>
-              <label><input type="radio" name="volume" checked>Observed</label>
-              <label><input id="match" type="radio" name="volume">Matched</label>
-            </fieldset>
-            <div class="observed">
-              <div class="barlabel"><b>Monthly</b><span>330 of 362 reviews</span></div>
-              <div class="track" aria-hidden="true"><i style="width:91.16%"></i><b style="width:8.84%"></b></div>
-              <div class="barlabel"><b>Fixed</b><span>302 of 331 reviews</span></div>
-              <div class="track" aria-hidden="true"><i style="width:83.43%"></i><b style="width:8.01%"></b></div>
-            </div>
-            <div class="matched">
-              <div class="barlabel"><b>Monthly</b><span>301 of 330 reviews</span></div>
-              <div class="track" aria-hidden="true"><i style="width:83.15%"></i><b style="width:8.01%"></b></div>
-              <div class="barlabel"><b>Fixed</b><span>301 of 330 reviews</span></div>
-              <div class="track" aria-hidden="true"><i style="width:83.15%"></i><b style="width:8.01%"></b></div>
-            </div>
-            <div class="key"><span><i></i>Fraud caught</span><span><i></i>Other reviews</span></div>
-          </figure>
-
-      </section>
-      <section id="projects" aria-labelledby="projects-title">
-        <div class="sectionhead"><h2 id="projects-title">Other things I’ve built</h2><a href="https://github.com/ErayGulerler?tab=repositories">All repositories ↗</a></div>
-        <dl class="index">
-          <div><dt><a href="https://github.com/ErayGulerler/CanaryLedger">CanaryLedger ↗</a><span>C++20</span></dt><dd>A C++20 release gate that checks checkout errors and latency before a rollout proceeds. Includes CMake, Bazel and Jenkins configurations.</dd></div>
-          <div><dt><a href="https://github.com/ErayGulerler/ClaimFence">ClaimFence ↗</a><span>Python</span></dt><dd>55 HTTP cases test whether an expense API keeps tenants isolated and prevents users from approving their own claims. Four seeded regressions check the suite itself.</dd></div>
-          <div><dt><a href="https://github.com/ErayGulerler/BTC-Execution-Lab">BTC Execution Lab ↗</a><span>C++17</span></dt><dd>A C++17 simulator compares evenly timed orders with a schedule weighted by historical trading volume on BTC spot data.</dd></div>
-          <div><dt><a href="https://github.com/ErayGulerler/parcel-invoice-audit">Parcel invoice audit ↗</a><span>PySpark</span></dt><dd>PySpark and Snowpark pipelines resolve invoice revisions, cross-check carrier tariffs and rank potential overcharges for review.</dd></div>
-        </dl>
-      </section>
-      <section id="about" aria-labelledby="about-heading">
-        <div class="sectionhead"><h2 id="about-heading">Experience &amp; education</h2></div>
-        <dl class="timeline">
-          <div><dt>Oct 2026 to present</dt><dd><h3>Nokia</h3><p class="role">Working student · Customer Delivery Engineering</p><p>I validate SDN/MPLS configurations in Nokia NSP, deploy multi-router SR Linux labs with Containerlab and Docker, and inspect forwarding state and logs to reproduce faults.</p></dd></div>
-          <div><dt>Jul to Sep 2026</dt><dd><h3>Nokia</h3><p class="role">Summer trainee · Customer Delivery Engineering</p></dd></div>
-          <div><dt>Oct 2024 to present</dt><dd><h3>Warsaw University of Technology</h3><p class="role">BSc programme · Computer Science and Information Systems</p><p>Faculty of Mathematics and Information Science. I expect to graduate in February 2028.</p></dd></div>
-        </dl>
-      </section>
-      <footer id="contact"><h2>Contact</h2><p>Reach me on <a href="https://www.linkedin.com/in/eray-gulerler/">LinkedIn</a> or explore my work on <a href="https://github.com/ErayGulerler">GitHub</a>.</p><a href="#top" class="back">Back to top ↑</a></footer>
-
+  <section class="ray" aria-labelledby="render-title">
+    <div class="ray-copy">
+      <h2 id="render-title">My little ray tracer</h2>
+      <p>Here’s a picture from my <a href="https://github.com/ErayGulerler/RayTracingProject_Csharp">C# ray tracer</a>. The floor is a sphere too. Its centre is 1,000 units below the other spheres, so the bit you can see looks flat.</p>
+      <p>The browser version uses a smaller scene. Turn the camera until you can see the coloured spheres reflected in the metal one. Then roughen its surface.</p>
+      <p class="minor"><a href="https://github.com/ErayGulerler/RayTracingProject_Csharp/blob/aa90a95/Program.cs#L386">Scene code</a> · <a href="trace-worker.js">Browser renderer source</a></p>
+      <button id="start" hidden>Run the ray tracer</button>
+      <fieldset id="controls" hidden><legend>Scene controls</legend>
+        <label for="angle">Camera angle <output id="angle-value" for="angle">18°</output><input aria-label="Camera angle" id="angle" type="range" min="-55" max="100" value="18" step="1"></label>
+        <label for="rough">Metal roughness <output id="rough-value" for="rough">0.00</output><input aria-label="Metal roughness" id="rough" type="range" min="0" max="100" value="0" step="1"></label>
+        <button id="restore" type="button">Return to the original image</button>
+      </fieldset>
     </div>
-  </main>
+    <figure class="render">
+      <div class="screen">
+        <img id="original" src="ray-render.png" width="200" height="133" alt="Ray-traced glass, metal and matte spheres on a grey surface.">
+        <canvas id="canvas" width="360" height="240" aria-label="Path-traced spheres viewed from the selected camera angle" hidden></canvas>
+      </div>
+      <figcaption><span id="caption">Original C# render · January 2026</span> <span id="progress">200 × 133 px</span></figcaption>
+      <p class="sr" id="lab-status" role="status"></p>
+    </figure>
+  </section>
+  <section id="research">
+    <h2>Research notes</h2>
+    <p><a href="fraud-thresholds.html">Should a fraud cutoff change every month?</a> I froze the model and changed only the cutoff. Updating it caught more fraud over six simulated months, but it also used more reviews. When I matched review counts month by month, both policies caught 301 cases.</p>
+    <p class="minor"><a href="https://github.com/ErayGulerler/fraud-detection-api/blob/research/monthly-thresholds/research/monthly_thresholds/technical-report.pdf">Four-page report (PDF)</a> · <a href="https://github.com/ErayGulerler/fraud-detection-api/blob/research/rare-event-distribution-shift/research/REPORT.md">Earlier classifier study</a></p>
+  </section>
+  <section id="projects">
+    <h2>Software</h2>
+    <ul class="software">
+      <li id="work"><a href="tickladder.html">TickLadder</a>. A C++ order book with a bounded price range. I wrote a map-based version to check the bitmap implementation against it. The eight-update example shows what happens when the best bid is removed.</li>
+      <li><a href="https://github.com/ErayGulerler/ClaimFence">ClaimFence</a>. An expense API and 55 HTTP tests. One test asks whether an employee can approve their own claim. Others try to read claims belonging to a different tenant.</li>
+      <li><a href="https://github.com/ErayGulerler/CanaryLedger">CanaryLedger</a>. A release check for a checkout service. It uses the canary’s error and latency budgets to decide whether a rollout should continue.</li>
+      <li><a href="https://github.com/ErayGulerler/BTC-Execution-Lab">BTC Execution Lab</a>. A simulator that splits a BTC order across time. It compares evenly spaced trades with a schedule based on historical volume.</li>
+      <li><a href="https://github.com/ErayGulerler/parcel-invoice-audit">Parcel invoice audit</a>. A reconciliation job for carrier bills. It resolves revised invoices before checking the charges against the tariff.</li>
+    </ul>
+  </section>
+  <footer>Warsaw, Poland · <a href="https://github.com/ErayGulerler/ErayGulerler.github.io">Site source</a></footer>
+</main>
 </body>
 </html>

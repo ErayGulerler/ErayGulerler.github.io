@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="A comparison of two alert policies at observed and equal review volumes.">
+  <meta property="og:title" content="Monthly fraud-alert thresholds · Eray Gulerler">
+  <meta property="og:image" content="https://eraygulerler.github.io/ray-render.png">
+  <link rel="canonical" href="https://eraygulerler.github.io/fraud-thresholds.html">
+  <link rel="stylesheet" href="personal.css">
+  <title>Monthly fraud-alert thresholds · Eray Gulerler</title>
+
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<main id="main" class="note"><nav aria-label="Home"><a href="./">Eray Gulerler</a> / Notes</nav>
+<h1>Should a fraud cutoff change every month?</h1>
+<p>I tested two alert policies on the same frozen model using synthetic card transactions from July through December 2020. One held the cutoff fixed. The other updated it monthly. Both had the same review allowance.</p>
+<figure class="comparison">
+            <figcaption>Fraud caught by threshold policy</figcaption>
+            <fieldset><legend class="sr">Compare review volumes</legend>
+              <label><input type="radio" name="volume" checked>Observed</label>
+              <label><input id="match" type="radio" name="volume">Matched</label>
+            </fieldset>
+            <div class="observed">
+              <div class="barlabel"><b>Monthly</b><span>330 of 362 reviews</span></div>
+              <div class="track" aria-hidden="true"><i style="width:91.16%"></i><b style="width:8.84%"></b></div>
+              <div class="barlabel"><b>Fixed</b><span>302 of 331 reviews</span></div>
+              <div class="track" aria-hidden="true"><i style="width:83.43%"></i><b style="width:8.01%"></b></div>
+            </div>
+            <div class="matched">
+              <div class="barlabel"><b>Monthly</b><span>301 of 330 reviews</span></div>
+              <div class="track" aria-hidden="true"><i style="width:83.15%"></i><b style="width:8.01%"></b></div>
+              <div class="barlabel"><b>Fixed</b><span>301 of 330 reviews</span></div>
+              <div class="track" aria-hidden="true"><i style="width:83.15%"></i><b style="width:8.01%"></b></div>
+            </div>
+            <div class="key"><span><i></i>Fraud caught</span><span><i></i>Other reviews</span></div>
+          </figure>
+<h2>What changed when I counted reviews</h2>
+<p>The monthly policy caught 330 frauds and the fixed policy caught 302. But the first policy also sent 362 transactions for review, compared with 331 for the second. A shared allowance still left the reviewers with different amounts of work.</p>
+<p>For each month, I took the smaller of the two review counts and compared the policies at that count. Across the six months, each then caught 301 frauds in 330 reviews. That’s the comparison I’d look at if the constraint is the number of cases a team can investigate.</p>
+<p><a href="https://github.com/ErayGulerler/fraud-detection-api/blob/research/monthly-thresholds/research/monthly_thresholds/technical-report.pdf">Technical report (PDF)</a> · <a href="https://github.com/ErayGulerler/fraud-detection-api/tree/research/monthly-thresholds/research/monthly_thresholds">Experiment plan, code and counts</a></p>
+<footer><a href="./#research">Back to research notes</a></footer></main>
+</body>
+</html>
