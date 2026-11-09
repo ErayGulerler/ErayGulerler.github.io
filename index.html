@@ -4,46 +4,54 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="color-scheme" content="light">
-  <meta name="theme-color" content="#f9f8f4">
+  <meta name="theme-color" content="#f5e9c9">
   <meta name="description" content="Eray Gulerler's engineering portfolio. Research on fraud-alert thresholds, network validation at Nokia, and reproducible systems software.">
   <meta property="og:title" content="Eray Gulerler | Machine learning &amp; systems">
   <meta property="og:description" content="Explore a fraud-detection experiment, step through a C++ order-book replay and read about network engineering at Nokia.">
   <meta property="og:type" content="website">
-  <meta property="og:image" content="https://eraygulerler.github.io/topology.png">
+  <meta property="og:image" content="https://eraygulerler.github.io/tape-5.webp">
   <link rel="canonical" href="https://eraygulerler.github.io/">
-  <link rel="stylesheet" href="styles.css?v=2">
+  <link rel="stylesheet" href="styles.css?v=3">
   <title>Eray Gulerler | Machine learning &amp; systems</title>
-  <script src="replay.js" defer></script>
+  <script src="replay.js?v=3" defer></script>
 </head>
 <body id="top">
   <a class="skip" href="#main">Skip to content</a>
-  <div class="layout">
-    <header class="rail">
-      <a class="wordmark" aria-label="Eray Gulerler, home" href="#top">eg<span>.</span></a>
-      <nav aria-label="Page sections">
-        <a href="#research">Research</a>
-        <a href="#work">Systems projects</a>
-        <a href="#about">Experience</a>
-        <a href="#contact">Contact</a>
-      </nav>
-      <div class="elsewhere"><a href="https://github.com/ErayGulerler">GitHub ↗</a><a href="https://www.linkedin.com/in/eray-gulerler/">LinkedIn ↗</a></div>
-    </header>
-    <main id="main">
-      <header class="intro">
-        <p class="location">Warsaw, Poland</p>
-        <h1>Eray Gulerler</h1>
-        <p class="lede">I work on networks at Nokia and study computer science at Warsaw University of Technology.</p>
-        <p>My independent work spans machine learning and systems software. Two places to start are my <a href="#research">fraud detection experiment</a> and <a href="#work">TickLadder</a>, a C++ engine that replays market data one update at a time.</p>
-      </header>
-      <section id="research" aria-labelledby="research-heading">
-        <div class="sectionhead"><h2 id="research-heading">Research</h2><span>Machine learning</span></div>
-        <article class="study">
-          <div class="abstract">
-            <h3>Does a monthly fraud threshold catch more fraud?</h3>
-            <p>Across six simulated test months, updating the cutoff caught 28 more frauds and sent 31 more transactions for review. At the same review volume, both policies caught 301.</p>
-            <div class="links"><a href="https://github.com/ErayGulerler/fraud-detection-api/blob/research/monthly-thresholds/research/monthly_thresholds/technical-report.pdf">Technical report ↗</a><a href="https://github.com/ErayGulerler/fraud-detection-api/tree/research/monthly-thresholds/research/monthly_thresholds">Experiment code ↗</a></div>
-          </div>
-          <figure class="comparison">
+  <header class="mast">
+    <div class="width mast-inner">
+      <div><h1>Eray Gulerler</h1><p>I study computer science in Warsaw and test networks at Nokia.</p></div>
+      <nav aria-label="Site navigation"><a href="#research">Research</a><a href="#projects">Projects</a><a href="#about">About</a><a href="https://github.com/ErayGulerler">GitHub ↗</a></nav>
+    </div>
+  </header>
+  <main id="main">
+    <section id="work" class="cover" aria-labelledby="cover-title">
+      <div class="width spread">
+        <div class="opening">
+          <a class="byline" href="https://github.com/ErayGulerler/TickLadder">TickLadder / C++20</a>
+          <h2 id="cover-title">Where did the <em>best bid</em> go?</h2>
+          <p>In my C++ order book, someone is bidding for 25 lots at 12000. The next update takes all 25 off the book. Which price moves to the front?</p>
+          <p>Step through the <a href="https://github.com/ErayGulerler/TickLadder/blob/main/examples/session.csv">sample tape</a>, then <a href="https://github.com/ErayGulerler/TickLadder/blob/main/include/tickladder/book.hpp">look inside the bitmap</a> that finds the price.</p>
+        </div>
+        <figure class="book" aria-labelledby="book-caption">
+          <figcaption id="book-caption">One slip = five lots <span>Price in ticks</span></figcaption>
+          <picture><source id="handheld" media="(max-width: 500px)" srcset="handheld-5.webp"><img id="drawing" src="tape-5.webp" width="1230" height="503" fetchpriority="high" alt="Update 5. Bids: 60 lots at 11998 and 25 at 12000. Asks: 30 at 12002 and 40 at 12004."></picture>
+          <div class="playline"><span id="step">Update 5 of 8</span><div id="buttons" hidden><button id="prev" aria-label="Previous update">←</button><button id="next">Remove the bid →</button></div></div>
+          <p id="event" role="status">The highest bid is 12000. The lowest ask is 12002.</p>
+          <noscript><a href="https://github.com/ErayGulerler/TickLadder/blob/main/examples/quotes.csv">Read all eight quotes ↗</a></noscript>
+        </figure>
+      </div>
+    </section>
+    <div class="width notebook">
+      <section id="research" class="research" aria-labelledby="threshold-title">
+        <div class="research-copy">
+          <p class="byline">Fraud detection / Python</p>
+          <h2 id="threshold-title">The catch was the review queue.</h2>
+          <p>I tested whether updating a fraud threshold every month would catch more fraud than keeping it fixed. Across six simulated months the monthly policy caught 28 more cases.</p>
+          <p>It also sent 31 more transactions for review. Give both policies the same number of reviews and the difference disappears.</p>
+          <div class="links"><a href="https://github.com/ErayGulerler/fraud-detection-api/blob/research/monthly-thresholds/research/monthly_thresholds/technical-report.pdf">Technical report ↗</a><a href="https://github.com/ErayGulerler/fraud-detection-api/tree/research/monthly-thresholds/research/monthly_thresholds">Experiment code ↗</a></div>
+          <p class="earlier"><a href="https://github.com/ErayGulerler/fraud-detection-api/blob/research/rare-event-distribution-shift/research/REPORT.md">Earlier study on rare-event classifiers ↗</a></p>
+        </div>
+                  <figure class="comparison">
             <figcaption>Fraud caught by threshold policy</figcaption>
             <fieldset><legend class="sr">Compare review volumes</legend>
               <label><input type="radio" name="volume" checked>Observed</label>
@@ -63,36 +71,15 @@
             </div>
             <div class="key"><span><i></i>Fraud caught</span><span><i></i>Other reviews</span></div>
           </figure>
-        </article>
-        <div class="related"><span>Earlier study</span><a href="https://github.com/ErayGulerler/fraud-detection-api/blob/research/rare-event-distribution-shift/research/REPORT.md">Rare-event classifiers under distribution shift ↗</a></div>
-      </section>
-      <section id="work" aria-labelledby="work-title">
-        <div class="sectionhead"><h2 id="work-title">Systems projects</h2><a href="https://github.com/ErayGulerler?tab=repositories">All repositories ↗</a></div>
-        <article class="feature">
-          <div><p class="tag">Market data · C++20</p><h3>TickLadder</h3>
-          <p>What happens when the best bid disappears? Step through the sample to see the engine find the next occupied price. A sequence gap stops the replay at the last trustworthy quote.</p>
-          <p>The tests compare the bitmap ladder with an ordered map across 300,000 random updates.</p>
-          <div class="links"><a href="https://github.com/ErayGulerler/TickLadder/blob/main/docs/design.md">Design notes ↗</a><a href="https://github.com/ErayGulerler/TickLadder">Source ↗</a></div></div>
-        <div class="replay" aria-labelledby="replay-title">
-          <div class="rephead"><h4 id="replay-title">Order book replay</h4><a href="https://github.com/ErayGulerler/TickLadder/blob/main/examples/session.csv">session.csv ↗</a></div>
-          <table><caption class="sr">Resting quantity by price for the selected sample update</caption><thead><tr><th>Tick</th><th>Side</th><th>Size (lots)</th></tr></thead>
-            <tbody>
-              <tr data-tick="12004"><th scope="row">12004</th><td>Ask</td><td><span class="bar" style="--w:53.33%"></span><output>40</output></td></tr>
-              <tr data-tick="12002"><th scope="row">12002</th><td>Ask</td><td><span class="bar" style="--w:40%"></span><output>30</output></td></tr>
-              <tr data-tick="12000" class="bid"><th scope="row">12000</th><td>Bid</td><td><span class="bar" style="--w:33.33%"></span><output>25</output></td></tr>
-              <tr data-tick="11998" class="bid"><th scope="row">11998</th><td>Bid</td><td><span class="bar" style="--w:80%"></span><output>60</output></td></tr>
-            </tbody>
-          </table>
-          <div class="replayfoot"><span id="step">Update 5 of 8</span><div id="buttons" hidden><button id="prev" aria-label="Previous update">←</button><button id="next" aria-label="Next update">→</button></div></div>
-          <p id="event" role="status">A new ask at 12002 narrows the spread to two ticks.</p>
-        </div>
 
-        </article>
+      </section>
+      <section id="projects" aria-labelledby="projects-title">
+        <div class="sectionhead"><h2 id="projects-title">Other things I’ve built</h2><a href="https://github.com/ErayGulerler?tab=repositories">All repositories ↗</a></div>
         <dl class="index">
-          <div><dt><a href="https://github.com/ErayGulerler/CanaryLedger">CanaryLedger ↗</a><span>Release engineering</span></dt><dd>A C++20 release gate that checks checkout errors and latency before a rollout proceeds. Includes CMake, Bazel and Jenkins configurations.</dd></div>
-          <div><dt><a href="https://github.com/ErayGulerler/ClaimFence">ClaimFence ↗</a><span>API security</span></dt><dd>55 HTTP cases test whether an expense API keeps tenants isolated and prevents users from approving their own claims. Four seeded regressions check the suite itself.</dd></div>
-          <div><dt><a href="https://github.com/ErayGulerler/BTC-Execution-Lab">BTC Execution Lab ↗</a><span>Execution research</span></dt><dd>A C++17 simulator compares evenly timed orders with a schedule weighted by historical trading volume on BTC spot data.</dd></div>
-          <div><dt><a href="https://github.com/ErayGulerler/parcel-invoice-audit">Parcel invoice audit ↗</a><span>Data engineering</span></dt><dd>PySpark and Snowpark pipelines resolve invoice revisions, cross-check carrier tariffs and rank potential overcharges for review.</dd></div>
+          <div><dt><a href="https://github.com/ErayGulerler/CanaryLedger">CanaryLedger ↗</a><span>C++20</span></dt><dd>A C++20 release gate that checks checkout errors and latency before a rollout proceeds. Includes CMake, Bazel and Jenkins configurations.</dd></div>
+          <div><dt><a href="https://github.com/ErayGulerler/ClaimFence">ClaimFence ↗</a><span>Python</span></dt><dd>55 HTTP cases test whether an expense API keeps tenants isolated and prevents users from approving their own claims. Four seeded regressions check the suite itself.</dd></div>
+          <div><dt><a href="https://github.com/ErayGulerler/BTC-Execution-Lab">BTC Execution Lab ↗</a><span>C++17</span></dt><dd>A C++17 simulator compares evenly timed orders with a schedule weighted by historical trading volume on BTC spot data.</dd></div>
+          <div><dt><a href="https://github.com/ErayGulerler/parcel-invoice-audit">Parcel invoice audit ↗</a><span>PySpark</span></dt><dd>PySpark and Snowpark pipelines resolve invoice revisions, cross-check carrier tariffs and rank potential overcharges for review.</dd></div>
         </dl>
       </section>
       <section id="about" aria-labelledby="about-heading">
@@ -100,11 +87,12 @@
         <dl class="timeline">
           <div><dt>Oct 2026 to present</dt><dd><h3>Nokia</h3><p class="role">Working student · Customer Delivery Engineering</p><p>I validate SDN/MPLS configurations in Nokia NSP, deploy multi-router SR Linux labs with Containerlab and Docker, and inspect forwarding state and logs to reproduce faults.</p></dd></div>
           <div><dt>Jul to Sep 2026</dt><dd><h3>Nokia</h3><p class="role">Summer trainee · Customer Delivery Engineering</p></dd></div>
-          <div><dt>Oct 2024 to present</dt><dd><h3>Warsaw University of Technology</h3><p class="role">BSc programme · Computer Science and Information Systems</p><p>Faculty of Mathematics and Information Science. Expected graduation in February 2028.</p></dd></div>
+          <div><dt>Oct 2024 to present</dt><dd><h3>Warsaw University of Technology</h3><p class="role">BSc programme · Computer Science and Information Systems</p><p>Faculty of Mathematics and Information Science. I expect to graduate in February 2028.</p></dd></div>
         </dl>
       </section>
       <footer id="contact"><h2>Contact</h2><p>Reach me on <a href="https://www.linkedin.com/in/eray-gulerler/">LinkedIn</a> or explore my work on <a href="https://github.com/ErayGulerler">GitHub</a>.</p><a href="#top" class="back">Back to top ↑</a></footer>
-    </main>
-  </div>
+
+    </div>
+  </main>
 </body>
 </html>

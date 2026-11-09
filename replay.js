@@ -1,34 +1,37 @@
-// Each row replaces the quantity at a price level in TickLadder's public sample.
+// Each line replaces the size at a price in TickLadder's public session.csv.
 const tape = [
-  [12000, 75, 'The first bid rests at 12000. There are no asks yet.'],
-  [12004, 40, 'An ask at 12004 opens a spread of four ticks.'],
-  [11998, 60, 'A second bid rests at 11998, behind the best bid.'],
+  [12000, 75, 'The first bid is 75 lots at 12000. No one is asking to sell yet.'],
+  [12004, 40, 'The first ask arrives at 12004. The spread is four ticks.'],
+  [11998, 60, 'A bid at 11998 joins the book, behind the bid at 12000.'],
   [12000, 25, 'The best bid shrinks from 75 lots to 25. Its price stays the same.'],
-  [12002, 30, 'A new ask at 12002 narrows the spread to two ticks.'],
-  [12000, 0, 'The bid at 12000 is removed. The next best bid is 11998.'],
-  [12002, 0, 'The ask at 12002 is removed. The best ask moves back to 12004.'],
-  [11998, 0, 'The last bid is removed. Only the ask at 12004 remains.']
+  [12002, 30, 'The highest bid is 12000. The lowest ask is 12002.'],
+  [12000, 0, 'The 25 lots at 12000 are gone. The bid at 11998 is now the best.'],
+  [12002, 0, 'The ask at 12002 is gone. The lowest ask moves back to 12004.'],
+  [11998, 0, 'The last bid disappears. Only the 40 lots offered at 12004 remain.']
 ];
-let current = 4;
+const prices = [11998, 12000, 12002, 12004];
+const drawing = document.querySelector('#drawing');
 const previous = document.querySelector('#prev');
 const next = document.querySelector('#next');
-function render() {
+let current = 4;
+
+function showUpdate() {
   const book = new Map();
-  for (const [tick, size] of tape.slice(0, current + 1)) book.set(tick, size);
-  for (const row of document.querySelectorAll('[data-tick]')) {
-    const tick = Number(row.dataset.tick);
-    const size = book.get(tick) || 0;
-    row.querySelector('output').textContent = size;
-    row.style.setProperty('--w', (100 * size / 75) + '%');
-    row.querySelector('.bar').style.removeProperty('--w');
-    row.classList.toggle('changed', tick === tape[current][0]);
-  }
+  for (const [price, lots] of tape.slice(0, current + 1)) book.set(price, lots);
+  const quantities = prices.map(price => (book.get(price) || 0) + ' lots at ' + price);
+  const sequence = current + 1;
+  document.querySelector('#handheld').srcset = 'handheld-' + sequence + '.webp';
+  drawing.src = 'tape-' + sequence + '.webp';
+  drawing.alt = 'Update ' + sequence + '. Bids: ' + quantities.slice(0, 2).join(', ') + '. Asks: ' + quantities.slice(2).join(', ') + '.';
+  document.querySelector('#step').textContent = 'Update ' + sequence + ' of ' + tape.length;
   document.querySelector('#event').textContent = tape[current][2];
-  document.querySelector('#step').textContent = 'Update ' + (current + 1) + ' of ' + tape.length;
   previous.disabled = current === 0;
-  next.disabled = current === tape.length - 1;
+  if (current === tape.length - 1) next.textContent = 'Replay from start ↺';
+  else if (current === 4) next.textContent = 'Remove the bid →';
+  else next.textContent = 'Next update →';
 }
-previous.addEventListener('click', () => { current -= 1; render(); });
-next.addEventListener('click', () => { current += 1; render(); });
-render();
+
+previous.addEventListener('click', () => { current -= 1; showUpdate(); });
+next.addEventListener('click', () => { current = (current + 1) % tape.length; showUpdate(); });
+showUpdate();
 document.querySelector('#buttons').hidden = false;
