@@ -72,3 +72,15 @@ export function onThemeChange(run) {
   new MutationObserver(run).observe(document.documentElement, { attributes: true, attributeFilter: ['data-mode'] });
 }
 export const group = n => n.toLocaleString('en-US');
+
+// Fill a slider's track between its resting value (data-origin, or the minimum) and the thumb.
+export function paintRange(input) {
+  const min = Number(input.min || 0), max = Number(input.max || 100), thumb = 11;
+  const at = value => {
+    const share = (value - min) / (max - min);
+    return `calc(${(share * 100).toFixed(2)}% + ${((.5 - share) * thumb).toFixed(2)}px)`;
+  };
+  const origin = Number(input.dataset.origin ?? min), value = Number(input.value);
+  input.style.setProperty('--from', at(Math.min(origin, value)));
+  input.style.setProperty('--to', at(Math.max(origin, value)));
+}

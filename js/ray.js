@@ -1,6 +1,6 @@
 // Drives trace-worker.js. Several workers each trace whole passes of the picture and
 // this module adds them up. While you drag, it traces a small picture so it can keep up.
-import { clamp } from './kit.js';
+import { clamp, paintRange } from './kit.js';
 
 const FULL = { width: 480, height: 320, passes: 48 };
 const ROUGH = { width: 168, height: 112, passes: 0 };   // one pass from each worker
@@ -99,6 +99,7 @@ export function ray(figure) {
 
   function moved() {
     angleInput.value = Math.round(view.angle);
+    paintRange(angleInput);
     angleInput.previousElementSibling.textContent = Math.round(view.angle) + '°';
     roughInput.previousElementSibling.textContent = view.roughness.toFixed(2);
     begin(ROUGH);

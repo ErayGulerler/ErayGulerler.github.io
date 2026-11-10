@@ -3,6 +3,7 @@
 // News about a link travels between neighbours, slower than the packets, so the
 // routers disagree for a while after a change. That disagreement is the interesting part.
 import { svg, el, reducedMotion, whileVisible } from './kit.js';
+import { attachConsole } from './console.js';
 
 const ROUTERS = ['r1', 'r2', 'r3', 'r4', 'r5', 'r6', 'r7'];
 const LINKS = [
@@ -57,9 +58,8 @@ export function topology(figure) {
   const flowList = figure.querySelector('.flows');
   const tableBody = figure.querySelector('.routes tbody');
   const tableTitle = figure.querySelector('.routes caption');
-  const status = figure.querySelector('.status');
   const tally = figure.querySelector('.tally');
-  const restore = figure.querySelector('.restore');
+  let cli = { note() {}, setPrompt() {} };
 
   const routers = Object.fromEntries(ROUTERS.map(name => [name, {
     name,
@@ -161,7 +161,6 @@ export function topology(figure) {
       nodeEls[name].classList.toggle('sel', name === selected);
       nodeEls[name].setAttribute('aria-label', `Router ${name}. Press to show its routes.`);
     }
-    restore.disabled = LINKS.every(link => link.up);
     paintTable();
     paintFlows();
     if (still) paintStillPaths();
@@ -239,6 +238,7 @@ export function topology(figure) {
     selected = name;
     oldRows = {};
     paint();
+    cli.setPrompt();
   }
 
   // ---------- the protocol ----------
@@ -290,14 +290,15 @@ export function topology(figure) {
         });
       }
     }
-    status.textContent = `${link.up ? 'Restored' : 'Cut'} the link between ${link.a} and ${link.b}.`;
+    cli.note(`${link.a} to ${link.b} is ${link.up ? 'back up' : 'down'}`);
     paint();
+    if (still) changeBegan = null;
   }
 
   // ---------- packets ----------
-  function send(flow) {
-    const dot = svg('circle', { class: 'pkt', r: 4.6, fill: flow.colour });
-    const packet = { el: dot, flow, at: flow.from, link: null, to: null, gone: 0, hops: 0, dead: 0 };
+  function send(flow, done) {
+    const dot = svg('circle', { class: done ? 'pkt probe' : 'pkt', r: done ? 5.6 : 4.6, fill: flow.colour });
+    const packet = { el: dot, flow, at: flow.from, link: null, to: null, gone: 0, hops: 0, dead: 0, done: false, report: done, sent: clock };
     layers.packets.append(dot);
     packets.push(packet);
     forward(packet);
@@ -305,7 +306,13 @@ export function topology(figure) {
   function forward(packet) {
     const here = packet.at;
     blink(here);
-    if (here === packet.flow.to) { delivered += 1; packet.el.remove(); packet.done = true; return; }
+    if (here === packet.flow.to) {
+      if (packet.report) packet.report({ ok: true, hops: packet.hops, seconds: clock - packet.sent });
+      else delivered += 1;
+      packet.el.remove();
+      packet.done = true;
+      return;
+    }
     const hop = routers[here].table.first[packet.flow.to];
     const link = hop && linkBetween(here, hop);
     if (!hop || !link.up || packet.hops >= TTL) { place(packet, ...point(here)); drop(packet); return; }
@@ -314,7 +321,8 @@ export function topology(figure) {
   function drop(packet) {
     if (packet.dead) return;
     packet.dead = clock + 1e-6;
-    lost += 1;
+    if (packet.report) packet.report({ ok: false, at: packet.at, looped: packet.hops >= TTL });
+    else lost += 1;
     packet.el.setAttribute('fill', 'var(--orange)');
   }
   function place(packet, x, y) { packet.el.setAttribute('cx', x); packet.el.setAttribute('cy', y); }
@@ -368,13 +376,38 @@ export function topology(figure) {
 
     if (changeBegan !== null && !news.length) {
       const took = lastHeard - changeBegan;
-      status.textContent += ` Every router that could hear about it had heard after ${took.toFixed(1)} seconds.`;
+      cli.note(`every router that could hear about it had heard after ${took.toFixed(1)} seconds`);
       changeBegan = null;
     }
     tally.textContent = `${delivered} packets delivered, ${lost} lost`;
   }
 
-  restore.addEventListener('click', () => { for (const link of LINKS) if (!link.up) toggle(link); });
+  // What the command line is allowed to do.
+  cli = attachConsole(figure.querySelector('.cli'), {
+    names: ROUTERS,
+    here: () => selected,
+    select,
+    table: name => routers[name].table,
+    neighbours: name => linksOf(name).map(link => ({ to: other(link, name), cost: link.cost, up: routers[name].database[link.id].up })),
+    cost: (a, b) => linkBetween(a, b).cost,
+    trace: (from, to) => walk({ from, to }),
+    setLink(a, b, up) {
+      const link = linkBetween(a, b);
+      if (!link) return 'none';
+      if (link.up === up) return 'same';
+      toggle(link);
+    },
+    restoreAll() {
+      const down = LINKS.filter(link => !link.up);
+      down.forEach(toggle);
+      return down.length > 0;
+    },
+    ping(from, to, done) {
+      if (!still) return send({ from, to, colour: 'var(--ink)' }, done);
+      const { hops, fate } = walk({ from, to });
+      done(fate ? { ok: false, at: hops.at(-1), looped: !fate.startsWith('dropped') } : { ok: true, hops: hops.length - 1 });
+    },
+  });
 
   build();
   let wasTall = layout === LAYOUTS.tall;

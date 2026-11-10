@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Eray Gulerler</title>
-  <meta name="description" content="Eray Gulerler’s personal homepage. Network engineering at Nokia, computer science in Warsaw, and a few programs you can run on the page.">
+  <meta name="description" content="Eray Gulerler’s homepage. I study computer science in Warsaw and work on networks at Nokia. Most of what’s here runs on the page.">
   <meta property="og:title" content="Eray Gulerler">
   <meta property="og:image" content="https://eraygulerler.github.io/ray-render.png">
   <meta name="theme-color" content="#edf0f3" media="(prefers-color-scheme: light)">
@@ -17,6 +17,8 @@
   <link rel="modulepreload" href="js/topology.js">
   <script>try { var t = localStorage.getItem('theme'); if (t) document.documentElement.dataset.theme = t; } catch (e) {}</script>
   <script type="module" src="js/site.js"></script>
+  <script type="speculationrules">{"prefetch": [{"urls": ["tickladder.html", "fraud-thresholds.html"], "eagerness": "moderate"}]}</script>
+  <script type="application/ld+json">{"@context": "https://schema.org", "@type": "Person", "name": "Eray Gulerler", "url": "https://eraygulerler.github.io/", "image": "https://eraygulerler.github.io/eray.jpg", "sameAs": ["https://github.com/ErayGulerler", "https://www.linkedin.com/in/eray-gulerler/"]}</script>
 </head>
 <body>
 <a class="skip" href="#main">Skip to content</a>
@@ -31,6 +33,16 @@
   </button>
 </header>
 
+<nav class="hops" aria-label="On this page">
+  <a href="#about"><span>Hello</span></a>
+  <a href="#ray"><span>Ray tracer</span></a>
+  <a href="#tickladder"><span>TickLadder</span></a>
+  <a href="#research"><span>Fraud cutoffs</span></a>
+  <a href="#projects"><span>Software</span></a>
+  <a href="#more"><span>About me</span></a>
+  <i class="hop-packet" aria-hidden="true"></i>
+</nav>
+
 <main id="main" class="frame">
   <section class="piece hero" id="about">
     <div class="notes">
@@ -38,9 +50,10 @@
         <img class="portrait" src="eray.jpg" alt="Eray Gulerler outdoors" width="800" height="800" fetchpriority="high">
         <h1>Eray Gulerler</h1>
       </div>
-      <p>I study computer science at Warsaw University of Technology and work on networks at Nokia. I joined as a summer trainee in July and stayed on as a working student in October 2026.</p>
-      <p>At work I set up virtual routers, change a configuration, and check where the packets go. The seven routers on this page are a toy version of that. Click a link to cut it.</p>
-      <p>Outside work I’ve been writing a C++ order book and testing fraud alerts on synthetic card transactions. Both are further down, and they run too.</p>
+      <p>I’m from Mersin, on Turkey’s Mediterranean coast, and I’ve lived in Warsaw for a few years now.</p>
+      <p>I study computer science at Warsaw University of Technology and work on networks at Nokia. I joined as a summer trainee in July 2026 and stayed on as a working student.</p>
+      <p>At work I set up virtual routers, change a configuration, and check where the packets actually go. The seven routers here are a toy version of that. Click a link to cut it, or type at the prompt.</p>
+      <p>Further down are things I built on my own time: a ray tracer, a C++ order book and an experiment on fraud alerts. They all run on the page.</p>
       <p id="contact" class="contact"><a href="https://github.com/ErayGulerler">GitHub</a> <a href="https://www.linkedin.com/in/eray-gulerler/">LinkedIn</a></p>
     </div>
     <figure class="fig topo" data-instrument="topology">
@@ -53,7 +66,6 @@
             <li><span class="dot" style="background:var(--violet-fill)"></span><span>r6 to r2</span><span class="path"><b>r6 r4 r2</b></span></li>
           </ul>
           <p class="readout small"><span class="tally mono">0 packets delivered, 0 lost</span></p>
-          <div class="controls"><button class="b restore" type="button" disabled>Restore every link</button></div>
         </div>
         <table class="routes">
           <caption>What r1 believes</caption>
@@ -68,18 +80,28 @@
           </tbody>
         </table>
       </div>
-      <p class="status small soft" role="status"></p>
-      <figcaption>Each router works out its own shortest paths and forwards from its own table. It only hears about a cut when a neighbour passes the news on, and I made the news travel slower than the packets. Cut the link between r5 and r7, then watch r4. Until it hears, it keeps sending r7’s packets back to r5. Click a router to read its table.</figcaption>
+      <form class="cli" autocomplete="off">
+        <div class="cli-log" role="log" aria-label="Router log" tabindex="0">
+          <div class="cmd">A:r1# traceroute r7</div>
+          <div class="out"> 1  r2   10</div>
+          <div class="out"> 2  r4   20</div>
+          <div class="out"> 3  r5   30</div>
+          <div class="out"> 4  r7   40</div>
+        </div>
+        <label class="cli-line" for="cli-input"><span class="prompt">A:r1#</span><input id="cli-input" type="text" spellcheck="false" autocapitalize="off" autocorrect="off" enterkeyhint="go" aria-label="Command for the selected router" placeholder="type help"></label>
+        <p class="cli-try"><button type="button" data-run="cut r5 r7">cut r5 r7</button> <button type="button" data-run="traceroute r7">traceroute r7</button> <button type="button" data-run="ping r7">ping r7</button> <button type="button" data-run="ssh r4">ssh r4</button> <button type="button" data-run="restore all">restore all</button> <button type="button" data-run="help">help</button></p>
+      </form>
+      <figcaption>Each router works out its own shortest paths and forwards from its own table. It only hears about a cut when a neighbour passes the news on, and I made the news travel slower than the packets. Cut the link between r5 and r7, then watch r4. Until it hears, it keeps sending r7’s packets back to r5. The prompt belongs to the yellow router, and clicking another router moves you there. <a class="src" href="https://github.com/ErayGulerler/ErayGulerler.github.io/blob/main/js/topology.js">js/topology.js</a></figcaption>
       <noscript><p class="cap">The network needs JavaScript to run.</p></noscript>
     </figure>
   </section>
 
   <section class="piece" id="ray">
     <div class="notes">
-      <h2>My little ray tracer</h2>
+      <h2>My little ray tracer <a class="anchor" href="#ray" aria-label="Link to this section">#</a></h2>
       <p>The small picture in the corner is from my <a href="https://github.com/ErayGulerler/RayTracingProject_Csharp">C# ray tracer</a>. The floor is a sphere too. Its centre is 1,000 units below the other spheres, so the bit you can see looks flat.</p>
       <p>The big picture is a smaller scene, traced in your browser as you read this. Drag it to turn the camera until you can see the coloured spheres reflected in the metal one. Then roughen its surface.</p>
-      <p class="refs"><a href="https://github.com/ErayGulerler/RayTracingProject_Csharp/blob/aa90a95/Program.cs#L386">Scene code</a> <a href="trace-worker.js">Browser renderer source</a></p>
+      <p class="refs"><a href="https://github.com/ErayGulerler/RayTracingProject_Csharp/blob/aa90a95/Program.cs#L386">Scene code in C#</a></p>
     </div>
     <figure class="fig ray" data-instrument="ray">
       <div class="screen">
@@ -88,16 +110,17 @@
         <i class="meter"></i>
       </div>
       <div class="controls">
-        <label class="slider" for="ray-angle">Camera angle <output for="ray-angle">18°</output><input id="ray-angle" type="range" min="-180" max="180" value="18" step="1"></label>
+        <label class="slider" for="ray-angle">Camera angle <output for="ray-angle">18°</output><input id="ray-angle" type="range" min="-180" max="180" value="18" step="1" data-origin="0"></label>
         <label class="slider" for="ray-rough">Metal roughness <output for="ray-rough">0.00</output><input id="ray-rough" type="range" min="0" max="100" value="0" step="1"></label>
       </div>
       <p class="readout small soft mono" role="status">Original C# render, January 2026, 200 × 133 pixels</p>
+      <figcaption><a class="src" href="https://github.com/ErayGulerler/ErayGulerler.github.io/blob/main/js/ray.js">js/ray.js</a> <a class="src" href="https://github.com/ErayGulerler/ErayGulerler.github.io/blob/main/trace-worker.js">trace-worker.js</a></figcaption>
     </figure>
   </section>
 
   <section class="piece" id="tickladder">
     <div class="notes">
-      <h2 style="view-transition-name: tickladder-title">TickLadder</h2>
+      <h2 style="view-transition-name: tickladder-title">TickLadder <a class="anchor" href="#tickladder" aria-label="Link to this section">#</a></h2>
       <p>A C++ order book with a bounded price range. Each side has an array of quantities, and a bit records whether each price is occupied. A second bitmap records which rows still contain a price. When the best bid goes away, the engine can skip the empty rows.</p>
       <p>The grid is a JavaScript port of that ladder with all 4,096 prices on screen. Cancel the best bid a few times and see how far the next one is. You can also click any cell to add or remove a price.</p>
       <p>I wrote a map-based version to check the C++ against. On this page a plain scan from one end does that job after every update.</p>
@@ -119,14 +142,14 @@
         <button class="quiet" type="button" data-do="reset">Start again</button>
       </div>
       <p class="readout small" role="status"></p>
-      <figcaption>Prices run left to right, 64 to a row, from tick 10000 at the top left to 14095. The two narrow columns on the left are the second bitmap, one bit for each row. Bids are aqua and asks are violet.</figcaption>
+      <figcaption>Prices run left to right, 64 to a row, from tick 10000 at the top left to 14095. The two narrow columns on the left are the second bitmap, one bit for each row. Bids are aqua and asks are violet. <a class="src" href="https://github.com/ErayGulerler/ErayGulerler.github.io/blob/main/js/ladder.js">js/ladder.js</a></figcaption>
       <noscript><p class="cap">The ladder needs JavaScript to run.</p></noscript>
     </figure>
   </section>
 
   <section class="piece" id="research">
     <div class="notes">
-      <h2 style="view-transition-name: fraud-title">Should a fraud cutoff change every month?</h2>
+      <h2 style="view-transition-name: fraud-title">Should a fraud cutoff change every month? <a class="anchor" href="#research" aria-label="Link to this section">#</a></h2>
       <p>I froze the model and changed only the cutoff. Updating it caught more fraud over six simulated months, but it also used more reviews. When I matched review counts month by month, both policies caught 301 cases.</p>
       <p>You can see it in the daily counts. Plot them against reviews done and the two lines land on top of each other.</p>
       <p class="refs"><a href="fraud-thresholds.html">The full note</a> <a href="https://github.com/ErayGulerler/fraud-detection-api/blob/research/monthly-thresholds/research/monthly_thresholds/technical-report.pdf">Four-page report (PDF)</a> <a href="https://github.com/ErayGulerler/fraud-detection-api/blob/research/rare-event-distribution-shift/research/REPORT.md">Earlier classifier study</a></p>
@@ -140,11 +163,11 @@
       </div>
       <div class="chart"></div>
       <p class="readout small" role="status">Monthly updating caught 330 frauds in 362 reviews. The fixed cutoff caught 302 in 331.</p>
-      <figcaption>Frauds caught so far, July to December 2020, on synthetic card transactions. Both policies score with the same frozen model.</figcaption>
+      <figcaption>Frauds caught so far, July to December 2020, on synthetic card transactions. Both policies score with the same frozen model. <a class="src" href="https://github.com/ErayGulerler/ErayGulerler.github.io/blob/main/js/fraud.js">js/fraud.js</a></figcaption>
     </figure>
   </section>
 
-  <div class="section-title" id="projects"><h2>Software</h2></div>
+  <div class="section-title" id="projects"><h2>Software <a class="anchor" href="#projects" aria-label="Link to this section">#</a></h2></div>
 
   <section class="piece small-fig">
     <div class="notes">
@@ -226,11 +249,28 @@
       <noscript><p class="cap">The July sample flags PLN 361.50 across 121 invoices.</p></noscript>
     </figure>
   </section>
+
+  <section class="piece" id="more">
+    <div class="notes">
+      <h2>Away from the keyboard <a class="anchor" href="#more" aria-label="Link to this section">#</a></h2>
+      <p>I’m class president for sixty-odd computer science students. In practice that’s scheduling, and a lot of emails to the faculty.</p>
+      <p>Otherwise I’m at the gym, or on a snowboard when there’s snow. I’ve put far too many hours into The Witcher 3 and Cyberpunk 2077. Both were made here in Warsaw.</p>
+      <p>I speak Turkish and English, and conversational Polish.</p>
+      <p>The fastest way to reach me is <a href="https://www.linkedin.com/in/eray-gulerler/">LinkedIn</a>.</p>
+    </div>
+    <div class="colophon">
+      <h3>How this site is made</h3>
+      <p>There’s no framework and no build step. What you get with view source is what I wrote, and each figure is one file in the <a href="https://github.com/ErayGulerler/ErayGulerler.github.io/tree/main/js">js folder</a>.</p>
+      <p>The typeface is Recursive, one variable font file. Numbers use its monospace axis, and the handwritten note on the network uses its casual axis.</p>
+      <p>The colours are fibre patch cords: aqua for OM3, violet for OM4, yellow for single-mode and orange for OM1. Links follow the same code. <a href="#about">Aqua stays on this site</a> and <a href="https://github.com/ErayGulerler">violet leaves it</a>.</p>
+      <p>Two keys work anywhere: <kbd>/</kbd> jumps to the router prompt and <kbd>t</kbd> switches the theme.</p>
+    </div>
+  </section>
 </main>
 
 <footer class="frame">
-  <span>Warsaw, Poland</span>
-  <span>No frameworks and no build step. <a href="https://github.com/ErayGulerler/ErayGulerler.github.io">Site source</a></span>
+  <span>Warsaw<span class="clock" hidden>, where it’s <time></time></span></span>
+  <a href="https://github.com/ErayGulerler/ErayGulerler.github.io">Site source</a>
 </footer>
 </body>
 </html>
