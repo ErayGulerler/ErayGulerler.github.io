@@ -3,65 +3,234 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="Eray Gulerler’s personal homepage. Network engineering at Nokia, computer science in Warsaw, and a few programs and experiments.">
+  <title>Eray Gulerler</title>
+  <meta name="description" content="Eray Gulerler’s personal homepage. Network engineering at Nokia, computer science in Warsaw, and a few programs you can run on the page.">
   <meta property="og:title" content="Eray Gulerler">
   <meta property="og:image" content="https://eraygulerler.github.io/ray-render.png">
+  <meta name="theme-color" content="#edf0f3" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#0f1923" media="(prefers-color-scheme: dark)">
   <link rel="canonical" href="https://eraygulerler.github.io/">
-  <link rel="stylesheet" href="personal.css">
-  <title>Eray Gulerler</title>
-
-  <script src="trace.js" defer></script>
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="preload" href="fonts/recursive-var.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="site.css">
+  <link rel="modulepreload" href="js/kit.js">
+  <link rel="modulepreload" href="js/topology.js">
+  <script>try { var t = localStorage.getItem('theme'); if (t) document.documentElement.dataset.theme = t; } catch (e) {}</script>
+  <script type="module" src="js/site.js"></script>
 </head>
 <body>
 <a class="skip" href="#main">Skip to content</a>
-<main id="main" class="home">
-  <header class="intro" id="about">
-    <img class="portrait" src="eray.jpg" alt="Eray Gulerler outdoors" width="800" height="800" fetchpriority="high">
-    <div>
-      <h1>Eray Gulerler</h1>
-      <p>I study computer science at Warsaw University of Technology and work on networks at Nokia. I joined as a summer trainee in July and stayed on as a working student in October 2026.</p>
-      <p>At work I set up virtual routers, change a configuration, and check where the packets go. Outside work I’ve been writing a C++ order book and testing fraud alerts on synthetic card transactions.</p>
-      <p id="contact" class="contact"><a href="https://github.com/ErayGulerler">GitHub</a> · <a href="https://www.linkedin.com/in/eray-gulerler/">LinkedIn</a></p>
-    </div>
-  </header>
-  <section class="ray" aria-labelledby="render-title">
-    <div class="ray-copy">
-      <h2 id="render-title">My little ray tracer</h2>
-      <p>Here’s a picture from my <a href="https://github.com/ErayGulerler/RayTracingProject_Csharp">C# ray tracer</a>. The floor is a sphere too. Its centre is 1,000 units below the other spheres, so the bit you can see looks flat.</p>
-      <p>The browser version uses a smaller scene. Turn the camera until you can see the coloured spheres reflected in the metal one. Then roughen its surface.</p>
-      <p class="minor"><a href="https://github.com/ErayGulerler/RayTracingProject_Csharp/blob/aa90a95/Program.cs#L386">Scene code</a> · <a href="trace-worker.js">Browser renderer source</a></p>
-      <button id="start" hidden>Run the ray tracer</button>
-      <fieldset id="controls" hidden><legend>Scene controls</legend>
-        <label for="angle">Camera angle <output id="angle-value" for="angle">18°</output><input aria-label="Camera angle" id="angle" type="range" min="-55" max="100" value="18" step="1"></label>
-        <label for="rough">Metal roughness <output id="rough-value" for="rough">0.00</output><input aria-label="Metal roughness" id="rough" type="range" min="0" max="100" value="0" step="1"></label>
-        <button id="restore" type="button">Return to the original image</button>
-      </fieldset>
-    </div>
-    <figure class="render">
-      <div class="screen">
-        <img id="original" src="ray-render.png" width="200" height="133" alt="Ray-traced glass, metal and matte spheres on a grey surface.">
-        <canvas id="canvas" width="360" height="240" aria-label="Path-traced spheres viewed from the selected camera angle" hidden></canvas>
+<header class="top frame">
+  <span></span>
+  <button class="theme" type="button" aria-label="Switch theme">
+    <svg viewBox="0 0 24 24" aria-hidden="true">
+      <g class="rays"><path d="M12 1.5v2.6M12 19.9v2.6M1.5 12h2.6M19.9 12h2.6M4.6 4.6l1.8 1.8M17.6 17.6l1.8 1.8M4.6 19.4l1.8-1.8M17.6 6.4l1.8-1.8"/></g>
+      <circle class="disc" cx="12" cy="12" r="5.2"/>
+      <circle class="bite" cx="12" cy="12" r="5"/>
+    </svg>
+  </button>
+</header>
+
+<main id="main" class="frame">
+  <section class="piece hero" id="about">
+    <div class="notes">
+      <div class="who">
+        <img class="portrait" src="eray.jpg" alt="Eray Gulerler outdoors" width="800" height="800" fetchpriority="high">
+        <h1>Eray Gulerler</h1>
       </div>
-      <figcaption><span id="caption">Original C# render · January 2026</span> <span id="progress">200 × 133 px</span></figcaption>
-      <p class="sr" id="lab-status" role="status"></p>
+      <p>I study computer science at Warsaw University of Technology and work on networks at Nokia. I joined as a summer trainee in July and stayed on as a working student in October 2026.</p>
+      <p>At work I set up virtual routers, change a configuration, and check where the packets go. The seven routers on this page are a toy version of that. Click a link to cut it.</p>
+      <p>Outside work I’ve been writing a C++ order book and testing fraud alerts on synthetic card transactions. Both are further down, and they run too.</p>
+      <p id="contact" class="contact"><a href="https://github.com/ErayGulerler">GitHub</a> <a href="https://www.linkedin.com/in/eray-gulerler/">LinkedIn</a></p>
+    </div>
+    <figure class="fig topo" data-instrument="topology">
+      <div class="stage"></div>
+      <div class="topo-panels">
+        <div>
+          <ul class="flows">
+            <li><span class="dot" style="background:var(--yellow)"></span><span>r1 to r7</span><span class="path"><b>r1 r2 r4 r5 r7</b></span></li>
+            <li><span class="dot" style="background:var(--aqua-fill)"></span><span>r7 to r3</span><span class="path"><b>r7 r5 r4 r3</b></span></li>
+            <li><span class="dot" style="background:var(--violet-fill)"></span><span>r6 to r2</span><span class="path"><b>r6 r4 r2</b></span></li>
+          </ul>
+          <p class="readout small"><span class="tally mono">0 packets delivered, 0 lost</span></p>
+          <div class="controls"><button class="b restore" type="button" disabled>Restore every link</button></div>
+        </div>
+        <table class="routes">
+          <caption>What r1 believes</caption>
+          <thead><tr><th scope="col">to</th><th scope="col">next hop</th><th scope="col">cost</th></tr></thead>
+          <tbody>
+            <tr><td>r2</td><td>r2</td><td>10</td></tr>
+            <tr><td>r3</td><td>r3</td><td>10</td></tr>
+            <tr><td>r4</td><td>r2</td><td>20</td></tr>
+            <tr><td>r5</td><td>r2</td><td>30</td></tr>
+            <tr><td>r6</td><td>r2</td><td>30</td></tr>
+            <tr><td>r7</td><td>r2</td><td>40</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="status small soft" role="status"></p>
+      <figcaption>Each router works out its own shortest paths and forwards from its own table. It only hears about a cut when a neighbour passes the news on, and I made the news travel slower than the packets. Cut the link between r5 and r7, then watch r4. Until it hears, it keeps sending r7’s packets back to r5. Click a router to read its table.</figcaption>
+      <noscript><p class="cap">The network needs JavaScript to run.</p></noscript>
     </figure>
   </section>
-  <section id="research">
-    <h2>Research notes</h2>
-    <p><a href="fraud-thresholds.html">Should a fraud cutoff change every month?</a> I froze the model and changed only the cutoff. Updating it caught more fraud over six simulated months, but it also used more reviews. When I matched review counts month by month, both policies caught 301 cases.</p>
-    <p class="minor"><a href="https://github.com/ErayGulerler/fraud-detection-api/blob/research/monthly-thresholds/research/monthly_thresholds/technical-report.pdf">Four-page report (PDF)</a> · <a href="https://github.com/ErayGulerler/fraud-detection-api/blob/research/rare-event-distribution-shift/research/REPORT.md">Earlier classifier study</a></p>
+
+  <section class="piece" id="ray">
+    <div class="notes">
+      <h2>My little ray tracer</h2>
+      <p>The small picture in the corner is from my <a href="https://github.com/ErayGulerler/RayTracingProject_Csharp">C# ray tracer</a>. The floor is a sphere too. Its centre is 1,000 units below the other spheres, so the bit you can see looks flat.</p>
+      <p>The big picture is a smaller scene, traced in your browser as you read this. Drag it to turn the camera until you can see the coloured spheres reflected in the metal one. Then roughen its surface.</p>
+      <p class="refs"><a href="https://github.com/ErayGulerler/RayTracingProject_Csharp/blob/aa90a95/Program.cs#L386">Scene code</a> <a href="trace-worker.js">Browser renderer source</a></p>
+    </div>
+    <figure class="fig ray" data-instrument="ray">
+      <div class="screen">
+        <canvas width="480" height="320" role="img" aria-label="Path-traced spheres seen from the chosen camera angle" hidden></canvas>
+        <img class="inset poster" src="ray-render.png" width="200" height="133" alt="The original C# render. Glass, metal and matte spheres on a grey floor.">
+        <i class="meter"></i>
+      </div>
+      <div class="controls">
+        <label class="slider" for="ray-angle">Camera angle <output for="ray-angle">18°</output><input id="ray-angle" type="range" min="-180" max="180" value="18" step="1"></label>
+        <label class="slider" for="ray-rough">Metal roughness <output for="ray-rough">0.00</output><input id="ray-rough" type="range" min="0" max="100" value="0" step="1"></label>
+      </div>
+      <p class="readout small soft mono" role="status">Original C# render, January 2026, 200 × 133 pixels</p>
+    </figure>
   </section>
-  <section id="projects">
-    <h2>Software</h2>
-    <ul class="software">
-      <li id="work"><a href="tickladder.html">TickLadder</a>. A C++ order book with a bounded price range. I wrote a map-based version to check the bitmap implementation against it. The eight-update example shows what happens when the best bid is removed.</li>
-      <li><a href="https://github.com/ErayGulerler/ClaimFence">ClaimFence</a>. An expense API and 55 HTTP tests. One test asks whether an employee can approve their own claim. Others try to read claims belonging to a different tenant.</li>
-      <li><a href="https://github.com/ErayGulerler/CanaryLedger">CanaryLedger</a>. A release check for a checkout service. It uses the canary’s error and latency budgets to decide whether a rollout should continue.</li>
-      <li><a href="https://github.com/ErayGulerler/BTC-Execution-Lab">BTC Execution Lab</a>. A simulator that splits a BTC order across time. It compares evenly spaced trades with a schedule based on historical volume.</li>
-      <li><a href="https://github.com/ErayGulerler/parcel-invoice-audit">Parcel invoice audit</a>. A reconciliation job for carrier bills. It resolves revised invoices before checking the charges against the tariff.</li>
-    </ul>
+
+  <section class="piece" id="tickladder">
+    <div class="notes">
+      <h2 style="view-transition-name: tickladder-title">TickLadder</h2>
+      <p>A C++ order book with a bounded price range. Each side has an array of quantities, and a bit records whether each price is occupied. A second bitmap records which rows still contain a price. When the best bid goes away, the engine can skip the empty rows.</p>
+      <p>The grid is a JavaScript port of that ladder with all 4,096 prices on screen. Cancel the best bid a few times and see how far the next one is. You can also click any cell to add or remove a price.</p>
+      <p>I wrote a map-based version to check the C++ against. On this page a plain scan from one end does that job after every update.</p>
+      <p class="refs"><a href="tickladder.html">The eight-update example</a> <a href="https://github.com/ErayGulerler/TickLadder/blob/main/docs/design.md">Design notes</a> <a href="https://github.com/ErayGulerler/TickLadder">Code and tests</a></p>
+    </div>
+    <figure class="fig ladder" data-instrument="ladder">
+      <div class="board">
+        <canvas role="img" aria-label="Bitmap of 4,096 prices. Bids and asks are coloured cells."></canvas>
+      </div>
+      <dl class="quote">
+        <div><dt>Best bid</dt><dd class="bid" data-q="bid">none</dd></div>
+        <div><dt>Best ask</dt><dd class="ask" data-q="ask">none</dd></div>
+        <div><dt>Spread</dt><dd data-q="spread">none</dd></div>
+      </dl>
+      <div class="controls">
+        <button class="b" type="button" data-do="cancel-bid">Cancel the best bid</button>
+        <button class="b" type="button" data-do="cancel-ask">Cancel the best ask</button>
+        <button class="b" type="button" data-do="tape" aria-pressed="false">Play a random tape</button>
+        <button class="quiet" type="button" data-do="reset">Start again</button>
+      </div>
+      <p class="readout small" role="status"></p>
+      <figcaption>Prices run left to right, 64 to a row, from tick 10000 at the top left to 14095. The two narrow columns on the left are the second bitmap, one bit for each row. Bids are aqua and asks are violet.</figcaption>
+      <noscript><p class="cap">The ladder needs JavaScript to run.</p></noscript>
+    </figure>
   </section>
-  <footer>Warsaw, Poland · <a href="https://github.com/ErayGulerler/ErayGulerler.github.io">Site source</a></footer>
+
+  <section class="piece" id="research">
+    <div class="notes">
+      <h2 style="view-transition-name: fraud-title">Should a fraud cutoff change every month?</h2>
+      <p>I froze the model and changed only the cutoff. Updating it caught more fraud over six simulated months, but it also used more reviews. When I matched review counts month by month, both policies caught 301 cases.</p>
+      <p>You can see it in the daily counts. Plot them against reviews done and the two lines land on top of each other.</p>
+      <p class="refs"><a href="fraud-thresholds.html">The full note</a> <a href="https://github.com/ErayGulerler/fraud-detection-api/blob/research/monthly-thresholds/research/monthly_thresholds/technical-report.pdf">Four-page report (PDF)</a> <a href="https://github.com/ErayGulerler/fraud-detection-api/blob/research/rare-event-distribution-shift/research/REPORT.md">Earlier classifier study</a></p>
+    </div>
+    <figure class="fig fraud" data-instrument="fraud">
+      <div class="controls" style="margin-top:0">
+        <div class="seg" role="radiogroup" aria-label="Horizontal axis">
+          <label><input type="radio" name="fraud-x" id="fraud-x-day" value="day" checked>By day</label>
+          <label><input type="radio" name="fraud-x" id="fraud-x-review" value="review">By review</label>
+        </div>
+      </div>
+      <div class="chart"></div>
+      <p class="readout small" role="status">Monthly updating caught 330 frauds in 362 reviews. The fixed cutoff caught 302 in 331.</p>
+      <figcaption>Frauds caught so far, July to December 2020, on synthetic card transactions. Both policies score with the same frozen model.</figcaption>
+    </figure>
+  </section>
+
+  <div class="section-title" id="projects"><h2>Software</h2></div>
+
+  <section class="piece small-fig">
+    <div class="notes">
+      <h3><a href="https://github.com/ErayGulerler/ClaimFence">ClaimFence</a></h3>
+      <p>An expense API and 55 HTTP tests. One test asks whether an employee can approve their own claim. Others try to read claims belonging to a different tenant.</p>
+      <p>The grid is the policy table from the repository. Every cell is a request and the status it should get. I also break the policy on purpose to check the tests notice.</p>
+    </div>
+    <figure class="fig" data-instrument="matrix">
+      <div class="matrix-wrap"></div>
+      <div class="controls">
+        <button class="b" type="button" data-fault="unscoped-item">Forget the tenant on one claim</button>
+        <button class="b" type="button" data-fault="unscoped-list">Forget it on the list</button>
+        <button class="b" type="button" data-fault="self-approval">Allow self-approval</button>
+        <button class="b" type="button" data-fault="private-field">Leak the internal note</button>
+      </div>
+      <p class="readout small" role="status">55 of 55 checks pass on the reference policy.</p>
+      <noscript><p class="cap">55 of 55 checks pass on the reference policy, and each of four planted bugs is caught.</p></noscript>
+    </figure>
+  </section>
+
+  <section class="piece small-fig">
+    <div class="notes">
+      <h3><a href="https://github.com/ErayGulerler/CanaryLedger">CanaryLedger</a></h3>
+      <p>A release check for a checkout service. It uses the canary’s error and latency budgets to decide whether a rollout should continue.</p>
+      <p>In the regression example the candidate fails 125 of 97,000 requests across the site. That’s 0.13%, well inside a 1% budget. Checkout on its own tells a different story.</p>
+    </div>
+    <figure class="fig" data-instrument="gate">
+      <div class="controls" style="margin-top:0">
+        <div class="seg" role="radiogroup" aria-label="Example input">
+          <label><input type="radio" name="gate-file" id="gate-healthy" value="healthy">healthy.csv</label>
+          <label><input type="radio" name="gate-file" id="gate-regression" value="regression" checked>regression.csv</label>
+          <label><input type="radio" name="gate-file" id="gate-incomplete" value="incomplete">incomplete.csv</label>
+        </div>
+      </div>
+      <div class="gate"></div>
+      <p class="readout small" role="status"></p>
+      <noscript><p class="cap">Checkout fails 30 of 2,000 candidate requests, 1.50%, up from 0.20%. The gate returns ROLLBACK.</p></noscript>
+    </figure>
+  </section>
+
+  <section class="piece small-fig">
+    <div class="notes">
+      <h3><a href="https://github.com/ErayGulerler/BTC-Execution-Lab">BTC Execution Lab</a></h3>
+      <p>A simulator that splits a BTC order across time. It compares evenly spaced trades with a schedule based on historical volume.</p>
+      <p>This is one hour from the test month, 08:00 UTC on 8 June 2024. A fill can’t take more than 5% of what the market traded that minute, so a big order falls behind whichever schedule it follows.</p>
+    </div>
+    <figure class="fig sched" data-instrument="schedule">
+      <div class="controls" style="margin-top:0">
+        <div class="seg" role="radiogroup" aria-label="Schedule">
+          <label><input type="radio" name="sched-policy" id="sched-twap" value="twap" checked>Even slices</label>
+          <label><input type="radio" name="sched-policy" id="sched-volume" value="volume">Volume schedule</label>
+        </div>
+        <div class="seg" role="radiogroup" aria-label="Order size">
+          <label><input type="radio" name="sched-size" id="sched-12" value="12">12 BTC</label>
+          <label><input type="radio" name="sched-size" id="sched-36" value="36" checked>36 BTC</label>
+        </div>
+      </div>
+      <div class="chart"></div>
+      <p class="readout small" role="status"></p>
+      <figcaption>Across all 138 paired orders the volume schedule cost 0.27 basis points less on average, with a 95% interval from −0.69 to +0.11. That isn’t enough to switch. Minute bars from Binance Vision.</figcaption>
+    </figure>
+  </section>
+
+  <section class="piece small-fig">
+    <div class="notes">
+      <h3><a href="https://github.com/ErayGulerler/parcel-invoice-audit">Parcel invoice audit</a></h3>
+      <p>A reconciliation job for carrier bills. It resolves revised invoices before checking the charges against the tariff.</p>
+      <p>The sample month has 1,371 invoice events for 1,200 parcels. Here are three of them, followed through the job.</p>
+    </div>
+    <figure class="fig" data-instrument="parcel">
+      <div class="controls" style="margin-top:0">
+        <div class="seg" role="radiogroup" aria-label="Parcel">
+          <label><input type="radio" name="parcel-id" id="parcel-17" value="PK00017" checked>PK00017</label>
+          <label><input type="radio" name="parcel-id" id="parcel-211" value="PK00211">PK00211</label>
+          <label><input type="radio" name="parcel-id" id="parcel-36" value="PK00036">PK00036</label>
+        </div>
+      </div>
+      <div class="trace" role="status"></div>
+      <noscript><p class="cap">The July sample flags PLN 361.50 across 121 invoices.</p></noscript>
+    </figure>
+  </section>
 </main>
+
+<footer class="frame">
+  <span>Warsaw, Poland</span>
+  <span>No frameworks and no build step. <a href="https://github.com/ErayGulerler/ErayGulerler.github.io">Site source</a></span>
+</footer>
 </body>
 </html>

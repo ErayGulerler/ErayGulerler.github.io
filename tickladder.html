@@ -3,30 +3,84 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>TickLadder · Eray Gulerler</title>
   <meta name="description" content="Replay the eight updates in TickLadder’s sample price book.">
   <meta property="og:title" content="TickLadder · Eray Gulerler">
   <meta property="og:image" content="https://eraygulerler.github.io/ray-render.png">
+  <meta name="theme-color" content="#edf0f3" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#0f1923" media="(prefers-color-scheme: dark)">
   <link rel="canonical" href="https://eraygulerler.github.io/tickladder.html">
-  <link rel="stylesheet" href="personal.css">
-  <title>TickLadder · Eray Gulerler</title>
-  <script src="replay.js?v=3" defer></script>
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="preload" href="fonts/recursive-var.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="site.css">
+  <script>try { var t = localStorage.getItem('theme'); if (t) document.documentElement.dataset.theme = t; } catch (e) {}</script>
+  <script type="module" src="js/site.js"></script>
 </head>
 <body>
 <a class="skip" href="#main">Skip to content</a>
-<main id="main" class="note"><nav aria-label="Home"><a href="./">Eray Gulerler</a> / Notes</nav>
-<h1>TickLadder</h1>
-<p>The tape updates one price at a time. A size of zero removes that price from the book. At update five, the highest bid is 12000 and there’s another bid two ticks below. Advance one update to see what replaces it.</p>
-<figure class="book" aria-labelledby="book-caption">
-          <figcaption id="book-caption">One slip = five lots <span>Price in ticks</span></figcaption>
-          <picture><source id="handheld" media="(max-width: 500px)" srcset="handheld-5.webp"><img id="drawing" src="tape-5.webp" width="1230" height="503" fetchpriority="high" alt="Update 5. Bids: 60 lots at 11998 and 25 at 12000. Asks: 30 at 12002 and 40 at 12004."></picture>
-          <div class="playline"><span id="step">Update 5 of 8</span><div id="buttons" hidden><button id="prev" aria-label="Previous update">←</button><button id="next">Remove the bid →</button></div></div>
-          <p id="event" role="status">The highest bid is 12000. The lowest ask is 12002.</p>
-          <noscript><a href="https://github.com/ErayGulerler/TickLadder/blob/main/examples/quotes.csv">Read all eight quotes ↗</a></noscript>
-        </figure>
-<h2>Finding the next price</h2>
-<p>Each side has an array of quantities. A bit records whether each price is occupied. A second bitmap records which groups still contain a price. When the best bid goes away, the engine can skip the empty groups.</p>
-<p>This design needs a fixed price range. I kept an ordered-map implementation as a reference and compared individual quotes across 300,000 random updates. A missing sequence number stops replay before another quote is published.</p>
-<p><a href="https://github.com/ErayGulerler/TickLadder/blob/main/docs/design.md">Design notes</a> · <a href="https://github.com/ErayGulerler/TickLadder/blob/main/examples/session.csv">Sample tape</a> · <a href="https://github.com/ErayGulerler/TickLadder">Code and tests</a></p>
-<footer><a href="./#projects">Back to software</a></footer></main>
+<header class="top frame">
+  <a class="home" href="./">Eray Gulerler</a>
+  <button class="theme" type="button" aria-label="Switch theme">
+    <svg viewBox="0 0 24 24" aria-hidden="true">
+      <g class="rays"><path d="M12 1.5v2.6M12 19.9v2.6M1.5 12h2.6M19.9 12h2.6M4.6 4.6l1.8 1.8M17.6 17.6l1.8 1.8M4.6 19.4l1.8-1.8M17.6 6.4l1.8-1.8"/></g>
+      <circle class="disc" cx="12" cy="12" r="5.2"/>
+      <circle class="bite" cx="12" cy="12" r="5"/>
+    </svg>
+  </button>
+</header>
+
+<main id="main" class="frame">
+<article class="note">
+  <h1 style="view-transition-name: tickladder-title">TickLadder</h1>
+  <p>The tape updates one price at a time. A size of zero removes that price from the book. At update five, the highest bid is 12000 and there’s another bid two ticks below. Advance one update to see what replaces it.</p>
+
+  <figure class="fig replay" data-instrument="replay">
+    <div class="strip"></div>
+    <div class="bits" aria-hidden="true"></div>
+    <div class="ticks" aria-hidden="true"></div>
+    <div class="controls">
+      <span class="buttons" hidden>
+        <button class="b" type="button" data-do="prev">Previous update</button>
+        <button class="b" type="button" data-do="next">Remove the bid</button>
+      </span>
+      <span class="step small soft">Update 5 of 8</span>
+    </div>
+    <p class="event readout" role="status">The highest bid is 12000. The lowest ask is 12002.</p>
+    <p class="readout small soft">The replay tool prints <code class="line">5,12000,25,12002,30</code></p>
+    <figcaption>Bar height is the size in lots. Bids are aqua and asks are violet. The row of digits is the occupancy bitmap for these thirteen prices, bits 11 to 23 of row 31.</figcaption>
+    <noscript><p class="cap"><a href="https://github.com/ErayGulerler/TickLadder/blob/main/examples/quotes.csv">Read all eight quotes</a></p></noscript>
+  </figure>
+
+  <h2>Finding the next price</h2>
+  <p>Each side has an array of quantities. A bit records whether each price is occupied. A second bitmap records which groups still contain a price. When the best bid goes away, the engine can skip the empty groups.</p>
+  <p>This design needs a fixed price range. I kept an ordered-map implementation as a reference and compared individual quotes across 300,000 random updates. A missing sequence number stops replay before another quote is published.</p>
+
+  <h2>The whole band</h2>
+  <p>The sample tape only touches four prices in one row. Here is the full range, 64 rows of 64 prices, with a busier book. Cancel the best bid and see how many empty prices the lookup steps over.</p>
+
+  <figure class="fig ladder" data-instrument="ladder">
+    <div class="board">
+      <canvas role="img" aria-label="Bitmap of 4,096 prices. Bids and asks are coloured cells."></canvas>
+    </div>
+    <dl class="quote">
+      <div><dt>Best bid</dt><dd class="bid" data-q="bid">none</dd></div>
+      <div><dt>Best ask</dt><dd class="ask" data-q="ask">none</dd></div>
+      <div><dt>Spread</dt><dd data-q="spread">none</dd></div>
+    </dl>
+    <div class="controls">
+      <button class="b" type="button" data-do="cancel-bid">Cancel the best bid</button>
+      <button class="b" type="button" data-do="cancel-ask">Cancel the best ask</button>
+      <button class="b" type="button" data-do="tape" aria-pressed="false">Play a random tape</button>
+      <button class="quiet" type="button" data-do="reset">Start again</button>
+    </div>
+    <p class="readout small" role="status"></p>
+    <figcaption>Prices run left to right from tick 10000 at the top left to 14095. The two narrow columns on the left are the second bitmap, one bit for each row. This is a JavaScript port of the C++ ladder, checked against a plain walk through the prices after every update.</figcaption>
+  </figure>
+
+  <p class="refs"><a href="https://github.com/ErayGulerler/TickLadder/blob/main/docs/design.md">Design notes</a> <a href="https://github.com/ErayGulerler/TickLadder/blob/main/examples/session.csv">Sample tape</a> <a href="https://github.com/ErayGulerler/TickLadder">Code and tests</a></p>
+</article>
+</main>
+
+<footer class="frame"><a href="./#tickladder">Back to the homepage</a></footer>
 </body>
 </html>

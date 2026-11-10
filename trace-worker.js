@@ -1,5 +1,7 @@
 // A small browser study of the sphere scene in ErayGulerler/RayTracingProject_Csharp.
 // Each sample follows a jittered camera ray through at most eight material bounces.
+// The page runs several copies of this worker. Each message asks for one pass over
+// the picture, and the page adds the passes together.
 function randomGenerator(seed) {
   return () => {
     seed = (Math.imul(seed, 1664525) + 1013904223) >>> 0;
@@ -80,37 +82,26 @@ function trace(scene, random, ox, oy, oz, dx, dy, dz) {
   return [0,0,0];
 }
 
-self.onmessage = ({data:{width,height,angle,roughness}}) => {
-  const scene=makeScene(roughness);
-  const random=randomGenerator(721);
+let scene, sceneRoughness;
+
+self.onmessage = ({data:{job,width,height,angle,eyeY,roughness,seed}}) => {
+  if (roughness !== sceneRoughness) { scene=makeScene(roughness); sceneRoughness=roughness; }
+  const random=randomGenerator(seed);
   const yaw=angle*Math.PI/180, sin=Math.sin(yaw), cos=Math.cos(yaw);
-  const eyeY=2.3, radius=8.8, targetY=.65;
+  const radius=8.8, targetY=.65;
   const length=Math.hypot(radius,eyeY-targetY);
   const tilt=(eyeY-targetY)/length, forward=radius/length;
   const zoom=Math.tan(25*Math.PI/360);
   const sums=new Float32Array(width*height*3);
-  const samples=16;
-  for (let pass=1; pass<=samples; pass++) {
-    for (let y=0; y<height; y++) {
-      for (let x=0; x<width; x++) {
-        const u=(2*(x+random())/width-1)*zoom*width/height;
-        const v=(1-2*(y+random())/height)*zoom;
-        const rgb=trace(scene,random,radius*sin,eyeY,radius*cos,
-          -sin*forward+cos*u-sin*tilt*v,-tilt+forward*v,-cos*forward-sin*u-cos*tilt*v);
-        const j=(y*width+x)*3;
-        sums[j]+=rgb[0]; sums[j+1]+=rgb[1]; sums[j+2]+=rgb[2];
-      }
-    }
-    if ([1,4,8,samples].includes(pass)) {
-      const pixels=new Uint8ClampedArray(width*height*4);
-      for(let i=0,j=0;i<pixels.length;i+=4,j+=3) {
-        pixels[i]=255*Math.sqrt(sums[j]/pass);
-        pixels[i+1]=255*Math.sqrt(sums[j+1]/pass);
-        pixels[i+2]=255*Math.sqrt(sums[j+2]/pass);
-        pixels[i+3]=255;
-      }
-      self.postMessage({pixels,pass,samples},[pixels.buffer]);
+  for (let y=0; y<height; y++) {
+    for (let x=0; x<width; x++) {
+      const u=(2*(x+random())/width-1)*zoom*width/height;
+      const v=(1-2*(y+random())/height)*zoom;
+      const rgb=trace(scene,random,radius*sin,eyeY,radius*cos,
+        -sin*forward+cos*u-sin*tilt*v,-tilt+forward*v,-cos*forward-sin*u-cos*tilt*v);
+      const j=(y*width+x)*3;
+      sums[j]=rgb[0]; sums[j+1]=rgb[1]; sums[j+2]=rgb[2];
     }
   }
-  self.close();
+  self.postMessage({job,sums},[sums.buffer]);
 };
